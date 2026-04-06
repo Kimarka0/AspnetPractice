@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mulukin\\Desktop\\aspnetPractice\\aspnetPractice\\aspnetPractice.csproj": {}
+    "C:\\Users\\Mulukin\\Documents\\GitHub\\AspnetPractice\\aspnetPractice\\aspnetPractice.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mulukin\\Desktop\\aspnetPractice\\aspnetPractice\\aspnetPractice.csproj": {
+    "C:\\Users\\Mulukin\\Documents\\GitHub\\AspnetPractice\\aspnetPractice\\aspnetPractice.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mulukin\\Desktop\\aspnetPractice\\aspnetPractice\\aspnetPractice.csproj",
+        "projectUniqueName": "C:\\Users\\Mulukin\\Documents\\GitHub\\AspnetPractice\\aspnetPractice\\aspnetPractice.csproj",
         "projectName": "aspnetPractice",
-        "projectPath": "C:\\Users\\Mulukin\\Desktop\\aspnetPractice\\aspnetPractice\\aspnetPractice.csproj",
+        "projectPath": "C:\\Users\\Mulukin\\Documents\\GitHub\\AspnetPractice\\aspnetPractice\\aspnetPractice.csproj",
         "packagesPath": "C:\\Users\\Mulukin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mulukin\\Desktop\\aspnetPractice\\aspnetPractice\\obj\\",
+        "outputPath": "C:\\Users\\Mulukin\\Documents\\GitHub\\AspnetPractice\\aspnetPractice\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Mulukin\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -49,6 +49,12 @@
               "version": "[10.0.5, )"
             },
             "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[10.0.5, )"
             },

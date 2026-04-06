@@ -1,10 +1,17 @@
-using AspNetPractice.Models;
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+using AspNetPractice.Data;  
+using AspNetPractice.Models;    
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=Players.db"));
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -12,17 +19,59 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-List<Player> players = new();
+app.UseHttpsRedirection();
 
-app.MapGet("/player/{id}", (int id) => new Player{Name = "Chupep", Level = 1488});
-app.MapGet("/players", () => players);
-app.MapGet("/player/search", (string name, int level) => new Player{Name = name, Level = level});
-
-app.MapPost("/player", (Player player) => 
-{   
-    players.Add(player);
-    return Results.Created(player.Name, player);
+app.MapPost("/player", async (Player player, AppDbContext db) =>
+{
+    await db.Players.AddAsync(player);
+    await db.SaveChangesAsync();            
+    return Results.Created($"/player/{player.Id}", player);
 });
 
-app.Run();
+app.MapGet("/players", async (AppDbContext db) =>
+{
+    return await db.Players.ToListAsync();
+});
 
+app.MapGet("/player/{id}", async (int id, AppDbContext db) =>
+{
+    return await db.Players.FindAsync(id);
+});
+
+app.MapPut("/player/{id}", async (int id, Player updatedPlayer, AppDbContext db) =>
+{
+    Player player = await db.Players.FindAsync(id);
+
+    if(player != null)
+    {
+        player.Name = updatedPlayer.Name;
+        player.Level = updatedPlayer.Level;
+        
+        await db.SaveChangesAsync();
+        return Results.Ok();
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+});
+
+app.MapDelete("/player/{id}", async (int id, AppDbContext db) =>
+{
+    Player player = await db.Players.FindAsync(id);
+
+    if(player != null)
+    {
+        db.Players.Remove(player);
+        await db.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+});
+
+
+app.Run();
