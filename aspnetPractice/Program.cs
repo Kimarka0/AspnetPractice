@@ -1,17 +1,14 @@
-using AspNetPractice.Data;  
-using AspNetPractice.Models;    
+using aspnetPractice.Models;
+using aspnetPractice.Data;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=Players.db"));
-
-
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=clients.db"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -19,59 +16,58 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.MapPost("/player", async (Player player, AppDbContext db) =>
+app.MapPost("/client", async (Client client, AppDbContext db) =>
 {
-    await db.Players.AddAsync(player);
-    await db.SaveChangesAsync();            
-    return Results.Created($"/player/{player.Id}", player);
+    await db.Clients.AddAsync(client);
+    await db.SaveChangesAsync();
+    
+    return Results.Created($"/client/{client.Id}", client);
 });
 
-app.MapGet("/players", async (AppDbContext db) =>
+app.MapGet("/client/{id}", async (int id, AppDbContext db) =>
 {
-    return await db.Players.ToListAsync();
+    Client client = await db.Clients.FindAsync(id);
+
+    if(client == null) return Results.NotFound();
+    
+    return Results.Ok(client);
 });
 
-app.MapGet("/player/{id}", async (int id, AppDbContext db) =>
+app.MapGet("/clients", async (AppDbContext db) =>
 {
-    return await db.Players.FindAsync(id);
+
+    return await db.Clients.ToListAsync();
 });
 
-app.MapPut("/player/{id}", async (int id, Player updatedPlayer, AppDbContext db) =>
+app.MapPut("/client/{id}", async (int id, Client updatedClient, AppDbContext db) =>
 {
-    Player player = await db.Players.FindAsync(id);
+    Client client = await db.Clients.FindAsync(id);
 
-    if(player != null)
-    {
-        player.Name = updatedPlayer.Name;
-        player.Level = updatedPlayer.Level;
-        
-        await db.SaveChangesAsync();
-        return Results.Ok();
-    }
-    else
-    {
-        return Results.NotFound();
-    }
+    if(client == null) return Results.NotFound();
+
+    client.Name = updatedClient.Name;
+    client.Surname = updatedClient.Surname;
+    client.Age = updatedClient.Age;
+    client.Balance = updatedClient.Balance;
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok();
+    
 });
 
-app.MapDelete("/player/{id}", async (int id, AppDbContext db) =>
+app.MapDelete("/client/{id}", async (int id, AppDbContext db) =>
 {
-    Player player = await db.Players.FindAsync(id);
+    Client client = await db.Clients.FindAsync(id);
 
-    if(player != null)
-    {
-        db.Players.Remove(player);
-        await db.SaveChangesAsync();
+    if(client == null) return Results.NotFound();
 
-        return Results.Ok();
-    }
-    else
-    {
-        return Results.NotFound();
-    }
+    db.Clients.Remove(client);
+
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
 });
-
 
 app.Run();
+
