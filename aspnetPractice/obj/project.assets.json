@@ -3318,7 +3318,8 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mulukin\\.nuget\\packages\\": {}
+    "C:\\Users\\Mulukin\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -3329,13 +3330,19 @@
       "packagesPath": "C:\\Users\\Mulukin\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Mulukin\\Documents\\GitHub\\AspnetPractice\\aspnetPractice\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Mulukin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Mulukin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

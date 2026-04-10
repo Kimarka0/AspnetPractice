@@ -1,6 +1,7 @@
 using aspnetPractice.Models;
 using FluentValidation;
 
+namespace aspnetPractice.Validation;
 public class ClientValidator : AbstractValidator<Client>
 {
     public ClientValidator()

@@ -197,3 +197,4 @@ C:\Users\Mulukin\Documents\GitHub\AspnetPractice\aspnetPractice\obj\Debug\net10.
 C:\Users\Mulukin\Documents\GitHub\AspnetPractice\aspnetPractice\obj\Debug\net10.0\aspnetPractice.pdb
 C:\Users\Mulukin\Documents\GitHub\AspnetPractice\aspnetPractice\obj\Debug\net10.0\aspnetPractice.genruntimeconfig.cache
 C:\Users\Mulukin\Documents\GitHub\AspnetPractice\aspnetPractice\obj\Debug\net10.0\ref\aspnetPractice.dll
+C:\Users\Mulukin\Documents\GitHub\AspnetPractice\aspnetPractice\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

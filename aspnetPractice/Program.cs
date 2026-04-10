@@ -1,5 +1,6 @@
 using aspnetPractice.Models;
 using aspnetPractice.Data;
+using aspnetPractice.Validation;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.Results;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.OpenApi.Models;
+using aspnetPractice.Services;
 
 
 
@@ -15,6 +17,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
 IConfiguration jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
+builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
@@ -76,14 +79,13 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapPost("/client", async (Client client, AppDbContext db, ClientValidator validator) =>
+app.MapPost("/client", async (RegisterModel registerModel, RegisterModelValidator validator, IClientService clientService) =>
 {
-    ValidationResult validationResult = await validator.ValidateAsync(client);
+    ValidationResult validationResult = await validator.ValidateAsync(registerModel);
 
     if(!validationResult.IsValid) return Results.BadRequest(validationResult.Errors);
 
-    await db.Clients.AddAsync(client);
-    await db.SaveChangesAsync();
+    Client client = await clientService.RegisterAsync(registerModel);
     
     return Results.Created($"/client/{client.Id}", client);
 });
@@ -104,22 +106,16 @@ app.MapGet("/clients", async (AppDbContext db) =>
     return await db.Clients.ToListAsync();
 });
 
-app.MapPut("/client/{id}", async (int id, Client updatedClient, AppDbContext db, ClientValidator validator) =>
+app.MapPut("/client/{id}", async (int id, Client updatedClient, ClientValidator validator, IClientService clientService) =>
 {
-    Client client = await db.Clients.FindAsync(id);
-
-    if(client == null) return Results.NotFound();
 
     ValidationResult validationResult = await validator.ValidateAsync(updatedClient);
 
     if(!validationResult.IsValid) return Results.BadRequest(validationResult.Errors);
 
-    client.Name = updatedClient.Name;
-    client.Surname = updatedClient.Surname;
-    client.Age = updatedClient.Age;
-    client.Balance = updatedClient.Balance;
+    Client? client = await clientService.UpdateAsync(id, updatedClient);
 
-    await db.SaveChangesAsync();
+    if (client == null) return Results.NotFound();
 
     return Results.Ok(client);
     
@@ -160,15 +156,9 @@ app.MapPost("/login", async (LoginModel loginModel, AppDbContext db) =>
 });
 
 
-app.MapDelete("/client/{id}", async (int id, AppDbContext db) =>
+app.MapDelete("/client/{id}", async (int id, IClientService clientService) =>
 {
-    Client client = await db.Clients.FindAsync(id);
-
-    if(client == null) return Results.NotFound();
-
-    db.Clients.Remove(client);
-
-    await db.SaveChangesAsync();
+    if (!await clientService.DeleteAsync(id)) return Results.NotFound();
 
     return Results.NoContent();
 }
