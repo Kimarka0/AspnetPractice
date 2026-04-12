@@ -164,6 +164,21 @@ app.MapDelete("/client/{id}", async (int id, IClientService clientService) =>
 }
 ).RequireAuthorization();
 
+app.MapPost("/transfer", async (TransferModel transferModel, IClientService clientService, TransferModelValidation validator) =>
+{
+    ValidationResult validationResult = await validator.ValidateAsync(transferModel);
+
+    if (!validationResult.IsValid) return Results.BadRequest(validationResult.Errors);
+
+    Client? receiver = await clientService.TransferAsync(transferModel);
+
+    if (receiver == null) return Results.BadRequest();
+
+    return Results.Ok(receiver);
+
+}).RequireAuthorization();
+
+
 app.MapGet("/secret", () => "top secret!")
     .RequireAuthorization();
 

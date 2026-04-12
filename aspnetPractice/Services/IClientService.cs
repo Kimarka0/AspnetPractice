@@ -9,5 +9,7 @@ namespace aspnetPractice.Services
         Task<Client?> UpdateAsync(int id, Client updatedClient);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<Client?> TransferAsync(TransferModel transferModel);
     }
 }

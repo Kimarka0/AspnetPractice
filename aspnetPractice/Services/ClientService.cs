@@ -1,5 +1,6 @@
 ﻿using aspnetPractice.Data;
 using aspnetPractice.Models;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace aspnetPractice.Services
 {
@@ -54,6 +55,34 @@ namespace aspnetPractice.Services
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Client?> TransferAsync(TransferModel transferModel)
+        {
+            await using IDbContextTransaction? transaction = await _db.Database.BeginTransactionAsync();
+
+            try
+            {
+                Client sender = await _db.Clients.FindAsync(transferModel.fromId);
+                Client receiver = await _db.Clients.FindAsync(transferModel.toId);
+
+                if (sender == null || receiver == null) return null;
+
+                if(sender.Balance < transferModel.amount) return null;
+                
+                sender.Balance -= transferModel.amount;
+                receiver.Balance += transferModel.amount;
+
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return receiver;
+            }
+
+            catch
+            {
+                await transaction.RollbackAsync();
+                return null;
+            }
         }
 
     }

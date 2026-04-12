@@ -146,6 +146,28 @@
         }
       }
     },
+    "/transfer": {
+      "post": {
+        "tags": [
+          "aspnetPractice"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/secret": {
       "get": {
         "tags": [
@@ -234,6 +256,24 @@
           "password": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferModel": {
+        "type": "object",
+        "properties": {
+          "fromId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
