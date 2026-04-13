@@ -66,9 +66,17 @@ namespace aspnetPractice.Services
                 Client sender = await _db.Clients.FindAsync(transferModel.fromId);
                 Client receiver = await _db.Clients.FindAsync(transferModel.toId);
 
-                if (sender == null || receiver == null) return null;
+                if (sender == null || receiver == null)
+                {
+                    await transaction.RollbackAsync();
+                    return null;
+                }
 
-                if(sender.Balance < transferModel.amount) return null;
+                if(sender.Balance < transferModel.amount)
+                {
+                    await transaction.RollbackAsync();
+                    return null;
+                }
                 
                 sender.Balance -= transferModel.amount;
                 receiver.Balance += transferModel.amount;
